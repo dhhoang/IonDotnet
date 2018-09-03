@@ -343,6 +343,7 @@ namespace IonDotnet.Internals.Binary
                     _symbolsWriter.StepOut();
                     break;
                 case SymbolState.LocalSymbolsFlushed:
+                case SymbolState.SubsequentLocalSymbols:
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
