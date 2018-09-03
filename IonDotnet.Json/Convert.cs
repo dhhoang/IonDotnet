@@ -95,16 +95,54 @@ namespace IonDotnet.Json
             }
             else if (token is JObject obj)
             {
-
+                WriteJObject(obj, writer);
             }
             else if (token is JArray arr)
             {
-
+                WriteJArray(arr, writer);
             }
             else
             {
                 throw new ArgumentException("Unsupported JToken type " + token.Type);
             }
+        }
+
+        private static void WriteJObject(JObject val, IIonWriter writer)
+        {
+            writer.StepIn(IonType.Struct);
+            foreach (var prop in val.Properties())
+            {
+                writer.SetFieldName(prop.Name);
+                var fieldValue = prop.Value;
+                var ann = fieldValue.GetIonAnnotations();
+                if (ann != null)
+                {
+                    foreach (var a in ann)
+                    {
+                        writer.AddTypeAnnotation(a);
+                    }
+                }
+                WriteJToken(fieldValue, writer);
+            }
+            writer.StepOut();
+        }
+
+        private static void WriteJArray(JArray val, IIonWriter writer)
+        {
+            writer.StepIn(IonType.List);
+            foreach (var element in val)
+            {
+                var ann = element.GetIonAnnotations();
+                if (ann != null)
+                {
+                    foreach (var a in ann)
+                    {
+                        writer.AddTypeAnnotation(a);
+                    }
+                }
+                WriteJToken(element, writer);
+            }
+            writer.StepOut();
         }
 
         private static void WriteJValue(JValue val, IIonWriter writer)
@@ -123,7 +161,10 @@ namespace IonDotnet.Json
                     }
                     break;
                 case JTokenType.String:
-                    writer.WriteString(val.Value<string>());
+                    if (val.IsIonSymbol())
+                        writer.WriteSymbol(val.Value<string>());
+                    else
+                        writer.WriteString(val.Value<string>());
                     break;
                 case JTokenType.Integer:
                     if (val.Value is BigInteger bi)
