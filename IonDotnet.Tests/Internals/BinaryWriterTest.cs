@@ -286,7 +286,7 @@ namespace IonDotnet.Tests.Internals
             {
                 for (var i = 0; i < 3; ++i)
                 {
-                    using (var writer = new ManagedBinaryWriter(BinaryConstants.EmptySymbolTablesArray))
+                    using (var writer = new ManagedBinaryWriter(stream, BinaryConstants.EmptySymbolTablesArray))
                     {
                         writer.StepIn(IonType.Struct);
 
@@ -295,7 +295,7 @@ namespace IonDotnet.Tests.Internals
                         writer.WriteInt(42);
 
                         writer.StepOut();
-                        await writer.FlushAsync(stream);
+                        await writer.FlushAsync();
                         if (i == 0)
                             firstLen = stream.Length;
                     }
@@ -324,7 +324,7 @@ namespace IonDotnet.Tests.Internals
             var firstLen = 0L;
             using (var stream = new MemoryStream())
             {
-                using (var writer = new ManagedBinaryWriter(BinaryConstants.EmptySymbolTablesArray))
+                using (var writer = new ManagedBinaryWriter(stream, BinaryConstants.EmptySymbolTablesArray))
                 {
                     for (var i = 0; i < 3; ++i)
                     {
@@ -335,7 +335,7 @@ namespace IonDotnet.Tests.Internals
                         writer.WriteInt(42);
 
                         writer.StepOut();
-                        await writer.FlushAsync(stream);
+                        await writer.FlushAsync();
                         if (i == 0)
                             firstLen = stream.Length;
                     }
