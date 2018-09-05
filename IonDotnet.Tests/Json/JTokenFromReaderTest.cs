@@ -20,7 +20,7 @@ namespace IonDotnet.Tests.Json
         public void TrivialStruct()
         {
             //empty struct {}
-            var trivial = DirStructure.ReadDataFile("text/trivial.ion");
+            var trivial = DirStructure.OwnTestFileAsBytes("text/trivial.ion");
             var text = Encoding.UTF8.GetString(trivial);
 
             var reader = new UserTextReader(text);
@@ -61,7 +61,7 @@ namespace IonDotnet.Tests.Json
         public void OneBoolInStruct()
         {
             //simple datagram: {yolo:true}
-            var oneBool = DirStructure.ReadDataFile("text/onebool.ion");
+            var oneBool = DirStructure.OwnTestFileAsBytes("text/onebool.ion");
             var reader = new UserTextReader(new MemoryStream(oneBool));
 
             var token = reader.ToJToken();
@@ -82,7 +82,7 @@ namespace IonDotnet.Tests.Json
             //longInt:int.Max*2
             //bigInt:long.Max*10
             //double:2213.1267567f
-            var flatScalar = DirStructure.ReadDataFile("text/flat_scalar.ion");
+            var flatScalar = DirStructure.OwnTestFileAsBytes("text/flat_scalar.ion");
 
             var reader = new UserTextReader(new MemoryStream(flatScalar));
             var token = reader.ToJToken();
@@ -104,7 +104,7 @@ namespace IonDotnet.Tests.Json
         public void FlatIntList()
         {
             //a flat list of ints [123,456,789]
-            var flatListInt = DirStructure.ReadDataFile("text/flatlist_int.ion");
+            var flatListInt = DirStructure.OwnTestFileAsBytes("text/flatlist_int.ion");
 
             var reader = new UserTextReader(new MemoryStream(flatListInt));
             var token = reader.ToJToken();
@@ -132,7 +132,7 @@ namespace IonDotnet.Tests.Json
         {
             //struct with single symbol
             //{single_symbol:'something'}
-            var data = DirStructure.ReadDataFile("text/single_symbol.ion");
+            var data = DirStructure.OwnTestFileAsBytes("text/single_symbol.ion");
 
             var reader = new UserTextReader(new MemoryStream(data));
             var token = reader.ToJToken();
@@ -150,7 +150,7 @@ namespace IonDotnet.Tests.Json
         [TestMethod]
         public void SingleIntList()
         {
-            var data = DirStructure.ReadDataFile("text/single_int_list.ion");
+            var data = DirStructure.OwnTestFileAsBytes("text/single_int_list.ion");
             var reader = new UserTextReader(new MemoryStream(data));
 
             var token = reader.ToJToken();
@@ -171,7 +171,7 @@ namespace IonDotnet.Tests.Json
         [TestMethod]
         public void Combined1()
         {
-            var data = DirStructure.ReadDataFile("text/combined1.ion");
+            var data = DirStructure.OwnTestFileAsBytes("text/combined1.ion");
             var reader = new UserTextReader(new MemoryStream(data));
 
             var token = reader.ToJToken();
@@ -191,7 +191,7 @@ namespace IonDotnet.Tests.Json
         [TestMethod]
         public void Struct_OneBlob()
         {
-            var data = DirStructure.ReadDataFile("text/struct_oneblob.ion");
+            var data = DirStructure.OwnTestFileAsBytes("text/struct_oneblob.ion");
             var reader = new UserTextReader(new MemoryStream(data));
 
             var expected = Convert.FromBase64String("AQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQ==");
