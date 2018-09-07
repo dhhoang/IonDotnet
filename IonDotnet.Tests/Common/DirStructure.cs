@@ -31,7 +31,7 @@ namespace IonDotnet.Tests.Common
             return new DirectoryInfo(Path.Combine(
                 root.FullName, "ion-tests", "iontestdata"));
         }
-
+        
         public static byte[] OwnTestFileAsBytes(string relativePath)
         {
             var testDatDir = TestDatDir();
