@@ -277,6 +277,90 @@ namespace IonDotnet.Tests.Internals
             reader.StepOut();
         }
 
+        [TestMethod]
+        public async Task WriteSeqStruct_NewWriters()
+        {
+            List<(string key, object value)> res = null;
+            var firstLen = 0L;
+            using (var stream = new MemoryStream())
+            {
+                for (var i = 0; i < 3; ++i)
+                {
+                    using (var writer = new ManagedBinaryWriter(stream, BinaryConstants.EmptySymbolTablesArray))
+                    {
+                        writer.StepIn(IonType.Struct);
+
+                        res = WriteFlat(writer);
+                        writer.SetFieldName("Field" + i);
+                        writer.WriteInt(42);
+
+                        writer.StepOut();
+                        await writer.FlushAsync();
+                        if (i == 0)
+                            firstLen = stream.Length;
+                    }
+                }
+
+                // Symbol table are always equally long, thus length should be exactly this
+                Assert.AreEqual(firstLen * 3, stream.Length);
+
+                var reader = new UserBinaryReader(new MemoryStream(stream.ToArray()));
+                for (var i = 0; i < 3; ++i)
+                {
+                    var kvps = new List<(string key, object value)>(res)
+                    {
+                        ("Field" + i, 42)
+                    };
+
+                    ReadUtils.AssertFlatStruct(reader, kvps);
+                }
+            }
+        }
+
+        [TestMethod]
+        public async Task WriteSeqStruct_SameWriter()
+        {
+            List<(string key, object value)> res = null;
+            var firstLen = 0L;
+            using (var stream = new MemoryStream())
+            {
+                using (var writer = new ManagedBinaryWriter(stream, BinaryConstants.EmptySymbolTablesArray))
+                {
+                    for (var i = 0; i < 3; ++i)
+                    {
+                        writer.StepIn(IonType.Struct);
+
+                        res = WriteFlat(writer);
+                        writer.SetFieldName("Field" + i);
+                        writer.WriteInt(42);
+
+                        writer.StepOut();
+                        await writer.FlushAsync();
+                        if (i == 0)
+                            firstLen = stream.Length;
+                    }
+                }
+                
+                Assert.IsTrue(stream.Length < (firstLen * 3), "Stream should be less than {0} but was {1}", firstLen * 3, stream.Length);
+
+                Console.WriteLine(System.Text.Encoding.GetEncoding("ISO-8859-1").GetString(stream.ToArray()));
+                Console.WriteLine(BitConverter.ToString(stream.ToArray()));
+                Console.WriteLine(stream.Length);
+                Console.WriteLine(firstLen);
+                var reader = new UserBinaryReader(new MemoryStream(stream.ToArray()));
+                for (var i = 0; i < 3; ++i)
+                {
+                    var kvps = new List<(string key, object value)>(res)
+                    {
+                        ("Field" + i, 42)
+                    };
+
+                    ReadUtils.AssertFlatStruct(reader, kvps);
+                }
+            }
+        }
+
+
         /// <summary>
         /// Just write a bunch of scalar values
         /// </summary>

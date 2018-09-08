@@ -246,9 +246,17 @@ namespace IonDotnet.Internals
         /// <param name="reader">Datagram reader</param>
         /// <param name="isOnStruct">Reader is before the $ion_symbol_table struct</param>
         /// <returns>Local symbol table</returns>
-        public static LocalSymbolTable Read(IIonReader reader, bool isOnStruct)
+        internal static LocalSymbolTable Read(IIonReader reader, bool isOnStruct, ISymbolTable previousSymbols)
         {
             var imports = ReadLocalSymbolTableImports(reader, isOnStruct, out var symbolList);
+            if(previousSymbols is LocalSymbolTable previousLocalSymbols)
+            {
+                var oldSymbolList = previousLocalSymbols._mySymbolNames;
+                var newSymbolList = new List<string>(previousLocalSymbols._mySymbolNames.Count + symbolList.Count - 1);
+                newSymbolList.AddRange(oldSymbolList);
+                newSymbolList.AddRange(symbolList);
+                symbolList = newSymbolList;
+            }
             return new LocalSymbolTable(imports, symbolList, true);
         }
 

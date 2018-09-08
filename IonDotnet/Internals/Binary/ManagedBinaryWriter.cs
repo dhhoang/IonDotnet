@@ -23,7 +23,8 @@ namespace IonDotnet.Internals.Binary
             SystemSymbols,
             LocalSymbolsWithImportsOnly,
             LocalSymbols,
-            LocalSymbolsFlushed
+            LocalSymbolsFlushed,
+            SubsequentLocalSymbols
         }
 
         private class ImportedSymbolsContext
@@ -108,7 +109,6 @@ namespace IonDotnet.Internals.Binary
             var lengthSegment = new List<Memory<byte>>(2);
             _symbolsWriter = new RawBinaryWriter(lengthWriterBuffer, new PagedWriter256Buffer(), lengthSegment);
             _userWriter = new RawBinaryWriter(lengthWriterBuffer, new PagedWriter256Buffer(), lengthSegment);
-
             _importContext = new ImportedSymbolsContext(importedTables);
             _locals = new Dictionary<string, int>();
         }
@@ -120,7 +120,17 @@ namespace IonDotnet.Internals.Binary
         /// <param name="writeIvm">Whether to write the Ion version marker</param>
         private void StartLocalSymbolTableIfNeeded(bool writeIvm)
         {
-            if (_symbolState != SymbolState.SystemSymbols) return;
+            if (_symbolState == SymbolState.SubsequentLocalSymbols)
+            {
+                _symbolsWriter.AddTypeAnnotationSymbol(Symbols.GetSystemSymbol(SystemSymbols.IonSymbolTableSid));
+                _symbolsWriter.StepIn(IonType.Struct);
+                _symbolState = SymbolState.LocalSymbolsWithImportsOnly;
+                return;
+            }
+            else if (_symbolState != SymbolState.SystemSymbols)
+            {
+                return;
+            }
 
             if (writeIvm)
             {
@@ -332,6 +342,7 @@ namespace IonDotnet.Internals.Binary
                     _symbolsWriter.StepOut();
                     break;
                 case SymbolState.LocalSymbolsFlushed:
+                case SymbolState.SubsequentLocalSymbols:
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -351,9 +362,7 @@ namespace IonDotnet.Internals.Binary
             _userWriter.Finish();
 
             //reset local symbols
-            _locals.Clear();
-            _localsLocked = false;
-            _symbolState = SymbolState.SystemSymbols;
+            _symbolState = SymbolState.SubsequentLocalSymbols;
         }
 
         public override Task FinishAsync()

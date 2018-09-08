@@ -68,7 +68,7 @@ namespace IonDotnet.Internals.Binary
                 //trying to read the local symboltable here
                 if (_hasSymbolTableAnnotation)
                 {
-                    _symbolTable = LocalSymbolTable.Read(this, false);
+                    _symbolTable = LocalSymbolTable.Read(this, false, _symbolTable);
                     //user don't need to read the localsymboltable so continue
                     _moveNextNeeded = true;
                 }
