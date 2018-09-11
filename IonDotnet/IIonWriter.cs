@@ -13,24 +13,37 @@ namespace IonDotnet
         ISymbolTable SymbolTable { get; }
 
         /// <summary>
-        /// Flush all the pending written data to the output stream asynchronously.
+        /// Flush all the pending written data (including symbol tables) to the output stream asynchronously.
         /// </summary>
         /// <returns>The task representing flush operation.</returns>
+        /// <exception cref="System.IO.IOException">I/O error on flushing.</exception>
         Task FlushAsync();
 
         /// <summary>
-        /// Flush all the pending written data to the output stream (blocking).
+        /// Flush all the pending written data (including symbol tables) to the output stream (blocking).
         /// </summary>
+        /// <exception cref="System.IO.IOException">I/O error on flushing.</exception>
         void Flush();
 
         /// <summary>
-        /// Mark the writer as 'finished', all written values will be erased.
+        /// Mark the end of a datagram, all written values will be flushed (blocking). 
         /// </summary>
         /// <remarks>
-        /// This will NOT flush the data to the output stream. Users of <see cref="IIonWriter"/> must
-        /// call <see cref="FlushAsync"/> before finishing.
+        /// This method WILL flush the data (including symbol tables) to the output stream. The writer will then be reset to
+        /// the initial state.
         /// </remarks>
+        /// <exception cref="System.IO.IOException">I/O error on flushing.</exception>
         void Finish();
+
+        /// <summary>
+        /// Mark the end of a datagram, all written values will be flushed (asynchronously). 
+        /// </summary>
+        /// <remarks>
+        /// This method WILL flush the data (including symbol tables) to the output stream. The writer will then be reset to
+        /// the initial state.
+        /// </remarks>
+        /// <exception cref="System.IO.IOException">I/O error on flushing.</exception>
+        Task FinishAsync();
 
         /// <summary>
         /// Set the field name, must be called when in a Struct
