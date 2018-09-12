@@ -86,6 +86,7 @@ namespace IonDotnet
         /// <param name="reader">Ion reader</param>
         /// <remarks>This method iterates until <see cref="IIonReader.MoveNext"/> returns null and does not Step out</remarks>
         void WriteValues(IIonReader reader);
+       
 
         /// <summary>
         /// Set the annotations of the current value
