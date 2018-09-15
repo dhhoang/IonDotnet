@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Numerics;
 using IonDotnet.Tests.Common;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -26,6 +27,7 @@ namespace IonDotnet.Tests.Integration
             void writerFunc(IIonWriter writer)
             {
                 writer.WriteInt(3);
+                writer.Finish();
             }
 
             var file = DirStructure.IonTestFile("good/hexWithTerminatingEof.ion");
@@ -215,6 +217,135 @@ namespace IonDotnet.Tests.Integration
             var r = ReaderFromFile(file, inputStyle);
             assertReader(r);
 
+            AssertReaderWriter(assertReader, writerFunc);
+        }
+
+        [TestMethod]
+        public void FloatDblMin()
+        {
+            var file = DirStructure.IonTestFile("good/floatDblMin.ion");
+            var floats = new[]
+            {
+                2.2250738585072012e-308,
+                0.00022250738585072012e-304,
+                2.225073858507201200000e-308,
+                2.2250738585072012e-00308,
+                2.2250738585072012997800001e-308
+            };
+
+            void assertReader(IIonReader reader)
+            {
+                foreach (var f in floats)
+                {
+                    Assert.AreEqual(IonType.Float, reader.MoveNext());
+                    ReaderTestCommon.AssertFloatEqual(f, reader.DoubleValue());
+                }
+
+                Assert.AreEqual(IonType.None, reader.MoveNext());
+            }
+
+            void writerFunc(IIonWriter writer)
+            {
+                foreach (var f in floats)
+                {
+                    writer.WriteFloat(f);
+                }
+
+                writer.Finish();
+            }
+
+            var r = ReaderFromFile(file, InputStyle.FileStream);
+            assertReader(r);
+
+            AssertReaderWriter(assertReader, writerFunc);
+        }
+
+        [TestMethod]
+        public void FloatSpecials()
+        {
+            var file = DirStructure.IonTestFile("good/floatSpecials.ion");
+
+            void assertReader(IIonReader reader)
+            {
+                Assert.AreEqual(IonType.List, reader.MoveNext());
+                reader.StepIn();
+
+                Assert.AreEqual(IonType.Float, reader.MoveNext());
+                Assert.IsTrue(double.IsNaN(reader.DoubleValue()));
+
+                Assert.AreEqual(IonType.Float, reader.MoveNext());
+                Assert.IsTrue(double.IsPositiveInfinity(reader.DoubleValue()));
+
+                Assert.AreEqual(IonType.Float, reader.MoveNext());
+                Assert.IsTrue(double.IsNegativeInfinity(reader.DoubleValue()));
+
+                Assert.AreEqual(IonType.None, reader.MoveNext());
+            }
+
+            void writerFunc(IIonWriter writer)
+            {
+                writer.StepIn(IonType.List);
+
+                writer.WriteFloat(double.NaN);
+                writer.WriteFloat(double.PositiveInfinity);
+                writer.WriteFloat(double.NegativeInfinity);
+
+                writer.StepOut();
+                writer.Finish();
+            }
+
+            var r = ReaderFromFile(file, InputStyle.FileStream);
+            assertReader(r);
+
+            AssertReaderWriter(assertReader, writerFunc);
+        }
+
+        [TestMethod]
+        public void FloatWithTerminatingEof()
+        {
+            var file = DirStructure.IonTestFile("good/floatWithTerminatingEof.ion");
+            var r = ReaderFromFile(file, InputStyle.FileStream);
+            Assert.AreEqual(IonType.Float, r.MoveNext());
+            ReaderTestCommon.AssertFloatEqual(12.3, r.DoubleValue());
+
+            Assert.AreEqual(IonType.None, r.MoveNext());
+        }
+
+        [TestMethod]
+        public void Float_zeros()
+        {
+            var file = DirStructure.IonTestFile("good/float_zeros.ion");
+            var reader = ReaderFromFile(file, InputStyle.FileStream);
+            while (reader.MoveNext() != IonType.None)
+            {
+                Assert.AreEqual(IonType.Float, reader.CurrentType);
+                Assert.AreEqual(0d, reader.DoubleValue());
+            }
+        }
+
+        [TestMethod]
+//        [DataRow("good/intBigSize256.10n")]
+        [DataRow("good/intBigSize256.ion")]
+        public void IntBigSize256(string fileName)
+        {
+            var file = DirStructure.IonTestFile(fileName);
+            var r = ReaderFromFile(file, InputStyle.FileStream);
+            BigInteger b;
+
+            void assertReader(IIonReader reader)
+            {
+                Assert.AreEqual(IonType.Int, reader.MoveNext());
+                Assert.AreEqual(IntegerSize.BigInteger, reader.GetIntegerSize());
+                b = reader.BigIntegerValue();
+            }
+
+            void writerFunc(IIonWriter writer)
+            {
+                writer.WriteInt(b);
+                writer.Finish();
+            }
+
+            assertReader(r);
             AssertReaderWriter(assertReader, writerFunc);
         }
 
