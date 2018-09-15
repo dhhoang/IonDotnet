@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Numerics;
 using IonDotnet.Tests.Common;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -273,7 +274,7 @@ namespace IonDotnet.Tests.Integration
                 Assert.IsTrue(double.IsNaN(reader.DoubleValue()));
 
                 Assert.AreEqual(IonType.Float, reader.MoveNext());
-                Assert.IsTrue(double.IsInfinity(reader.DoubleValue()));
+                Assert.IsTrue(double.IsPositiveInfinity(reader.DoubleValue()));
 
                 Assert.AreEqual(IonType.Float, reader.MoveNext());
                 Assert.IsTrue(double.IsNegativeInfinity(reader.DoubleValue()));
@@ -308,6 +309,44 @@ namespace IonDotnet.Tests.Integration
             ReaderTestCommon.AssertFloatEqual(12.3, r.DoubleValue());
 
             Assert.AreEqual(IonType.None, r.MoveNext());
+        }
+
+        [TestMethod]
+        public void Float_zeros()
+        {
+            var file = DirStructure.IonTestFile("good/float_zeros.ion");
+            var reader = ReaderFromFile(file, InputStyle.FileStream);
+            while (reader.MoveNext() != IonType.None)
+            {
+                Assert.AreEqual(IonType.Float, reader.CurrentType);
+                Assert.AreEqual(0d, reader.DoubleValue());
+            }
+        }
+
+        [TestMethod]
+//        [DataRow("good/intBigSize256.10n")]
+        [DataRow("good/intBigSize256.ion")]
+        public void IntBigSize256(string fileName)
+        {
+            var file = DirStructure.IonTestFile(fileName);
+            var r = ReaderFromFile(file, InputStyle.FileStream);
+            BigInteger b;
+
+            void assertReader(IIonReader reader)
+            {
+                Assert.AreEqual(IonType.Int, reader.MoveNext());
+                Assert.AreEqual(IntegerSize.BigInteger, reader.GetIntegerSize());
+                b = reader.BigIntegerValue();
+            }
+
+            void writerFunc(IIonWriter writer)
+            {
+                writer.WriteInt(b);
+                writer.Finish();
+            }
+
+            assertReader(r);
+            AssertReaderWriter(assertReader, writerFunc);
         }
 
         private static decimal ParseDecimal(string s)
