@@ -35,18 +35,51 @@ namespace IonDotnet.Internals.Lite
             throw new System.NotImplementedException();
         }
 
-        public override IonType Type
-        {
-            get => IonType.Decimal;
-        }
+        public override IonType Type => IonType.Decimal;
 
         public override void Accept(IValueVisitor visitor)
         {
             visitor.Visit(this);
         }
 
-        public decimal DecimalValue { get; set; }
-        public float FloatValue { get; set; }
-        public double DoubleValue { get; set; }
+        public decimal DecimalValue
+        {
+            get
+            {
+                ValidateThisNotNull();
+                return _decimalValue;
+            }
+            set
+            {
+                CheckForLock();
+                _decimalValue = value;
+            }
+        }
+
+        public float FloatValue
+        {
+            get
+            {
+                ValidateThisNotNull();
+                return (float) _decimalValue;
+            }
+            set
+            {
+                CheckForLock();
+                _decimalValue = (decimal) value;
+            }
+        }
+        public double DoubleValue {
+            get
+            {
+                ValidateThisNotNull();
+                return (double) _decimalValue;
+            } 
+            set
+            {
+                CheckForLock();
+                _decimalValue = (decimal) value;
+            } 
+        }
     }
 }

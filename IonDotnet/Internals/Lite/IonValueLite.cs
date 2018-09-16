@@ -168,6 +168,22 @@ namespace IonDotnet.Internals.Lite
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         protected bool IsNullValue() => HasFlag(NullFlag);
+        
+        protected void ValidateThisNotNull()
+        {
+            if (IsNull)
+            {
+                throw new ArgumentException("");
+            }
+        }
+
+        protected void CheckForLock()
+        {
+            if (this.ReadOnly)
+            {
+                throw new InvalidOperationException("");
+            }
+        }
 
         protected bool IsNullValue(bool value)
         {
