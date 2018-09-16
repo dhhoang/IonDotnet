@@ -3,7 +3,7 @@ namespace IonDotnet.Internals.Lite
     internal sealed class IonDecimalLite: IonValueLite, IIonDecimal
     {
 
-        private decimal _decimal_value;
+        private decimal _decimalValue;
         private static readonly int HASH_SIGNATURE = IonType.Decimal.ToString().GetHashCode();
         
         public IonDecimalLite(ContainerlessContext containerlessContext, bool isNull) : base(containerlessContext, isNull)
@@ -12,7 +12,7 @@ namespace IonDotnet.Internals.Lite
 
         public IonDecimalLite(IonDecimalLite existing, IContext context) : base(existing, context)
         {
-            _decimal_value = existing._decimal_value;
+            _decimalValue = existing._decimalValue;
         }
         
         protected override int GetHashCode(ISymbolTableProvider symbolTableProvider)
@@ -27,7 +27,7 @@ namespace IonDotnet.Internals.Lite
 
         protected override void WriteBodyTo(IIonWriter writer, ISymbolTableProvider symbolTableProvider)
         {
-            writer.WriteDecimal(_decimal_value);
+            writer.WriteDecimal(_decimalValue);
         }
 
         public IIonDecimal Clone()
@@ -35,12 +35,18 @@ namespace IonDotnet.Internals.Lite
             throw new System.NotImplementedException();
         }
 
-        public override IonType Type { get; }
+        public override IonType Type
+        {
+            get => IonType.Decimal;
+        }
+
         public override void Accept(IValueVisitor visitor)
         {
             visitor.Visit(this);
         }
 
         public decimal DecimalValue { get; set; }
+        public float FloatValue { get; set; }
+        public double DoubleValue { get; set; }
     }
 }
