@@ -11,8 +11,8 @@ namespace IonDotnet
         /// symbol table if necessary. The cloned value will be modifiable regardless of whether this instance <see cref="IIonValue.ReadOnly"/>.
         ///
         /// The cloned value will be created in the context of the same
-        /// {@link ValueFactory} as this instance; if you want a copy using a
-        /// different factory, then use {@link ValueFactory#clone(IonValue)} instead
+        /// <see cref="IValueFactory"/> as this instance; if you want a copy using a
+        /// different factory, then use <see cref="IValueFactory.clone()"/> instead
         /// </summary>
         /// <returns>A copy of this value</returns>
         /// <exception cref="UnknownSymbolException" />
