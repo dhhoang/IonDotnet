@@ -1,3 +1,5 @@
+using System;
+
 namespace IonDotnet.Internals.Lite
 {
     internal sealed class IonDecimalLite: IonValueLite, IIonDecimal
@@ -17,7 +19,7 @@ namespace IonDotnet.Internals.Lite
         
         protected override int GetHashCode(ISymbolTableProvider symbolTableProvider)
         {
-            throw new System.NotImplementedException();          
+            throw new NotImplementedException();          
         }
 
         public override IonValueLite Clone(IContext parentContext)
@@ -32,7 +34,7 @@ namespace IonDotnet.Internals.Lite
 
         public IIonDecimal Clone()
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         public override IonType Type => IonType.Decimal;
@@ -56,29 +58,16 @@ namespace IonDotnet.Internals.Lite
             }
         }
 
-        public float FloatValue
-        {
-            get
-            {
-                ValidateThisNotNull();
-                return (float) _decimalValue;
-            }
-            set
-            {
-                CheckForLock();
-                _decimalValue = (decimal) value;
-            }
-        }
         public double DoubleValue {
             get
             {
                 ValidateThisNotNull();
-                return (double) _decimalValue;
+                return Convert.ToDouble(_decimalValue);
             } 
             set
             {
                 CheckForLock();
-                _decimalValue = (decimal) value;
+                _decimalValue = Convert.ToDecimal(value);
             } 
         }
     }
