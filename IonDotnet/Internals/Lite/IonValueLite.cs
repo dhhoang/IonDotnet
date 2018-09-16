@@ -173,7 +173,7 @@ namespace IonDotnet.Internals.Lite
         {
             if (IsNull)
             {
-                throw new ArgumentException("The value is null");
+                throw new NullValueException();
             }
         }
 
