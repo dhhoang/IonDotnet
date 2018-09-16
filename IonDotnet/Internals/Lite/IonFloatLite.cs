@@ -47,13 +47,12 @@ namespace IonDotnet.Internals.Lite
         {
             get
             {
-                this.ValidateThisNotNull();
+                ValidateThisNotNull();
                 return (float)_value;
             }
-            // verify that this value is not readonly
             set
             {
-                this.CheckForLock();
+                CheckForLock();
                 _value = (double) value;
             }
             
@@ -63,18 +62,15 @@ namespace IonDotnet.Internals.Lite
         {
             get
             {
-                this.ValidateThisNotNull();
+                ValidateThisNotNull();
                 return _value;
             }
             set
             {
-                this.CheckForLock();
+                CheckForLock();
                 _value = value;
             }
         }
-        public bool IsNumeric {
-            get { return !(this.IsNullValue() || Double.IsNaN(_value) || Double.IsInfinity(_value)); }
-            
-        }
+        public bool IsNumeric => !(IsNullValue() || Double.IsNaN(_value) || Double.IsInfinity(_value));
     }
 }

@@ -171,17 +171,17 @@ namespace IonDotnet.Internals.Lite
 
         protected void ValidateThisNotNull()
         {
-            if (this.IsNull)
+            if (IsNull)
             {
-                throw new System.ArgumentException("");
+                throw new ArgumentException("The value is null");
             }
         }
 
         protected void CheckForLock()
         {
-            if (this.ReadOnly)
+            if (ReadOnly)
             {
-                throw new System.InvalidOperationException("");
+                throw new InvalidOperationException("Operation is not valid");
             }
         }
 
