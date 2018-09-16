@@ -6,22 +6,6 @@ namespace IonDotnet.Internals.Lite
     {
         private double _value;
         private static readonly int HASH_SIGNATURE = IonType.Float.ToString().GetHashCode();
-        
-        void ValidateThisNotNull()
-        {
-            if (this.IsNull)
-            {
-                throw new System.ArgumentException("");
-            }
-        }
-
-        void CheckForLock()
-        {
-            if (this.ReadOnly)
-            {
-                throw new System.InvalidOperationException("");
-            }
-        }
        
         public IonFloatLite(ContainerlessContext containerlessContext, bool isNull) : base(containerlessContext, isNull)
         {
