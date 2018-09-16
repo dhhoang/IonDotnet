@@ -173,15 +173,15 @@ namespace IonDotnet.Internals.Lite
         {
             if (IsNull)
             {
-                throw new ArgumentException("");
+                throw new ArgumentException("The value is null");
             }
         }
 
         protected void CheckForLock()
         {
-            if (this.ReadOnly)
+            if (ReadOnly)
             {
-                throw new InvalidOperationException("");
+                throw new InvalidOperationException("Operation is not valid");
             }
         }
 
