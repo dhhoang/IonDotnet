@@ -86,7 +86,8 @@ namespace IonDotnet.Internals.Lite
 
         public IIonFloat NewNullFloat()
         {
-            throw new NotImplementedException();
+            IonFloatLite ionValue = new IonFloatLite(Context, true);
+            return ionValue;
         }
 
         public IIonFloat NewFloat(double value)

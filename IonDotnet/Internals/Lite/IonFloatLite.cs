@@ -47,12 +47,12 @@ namespace IonDotnet.Internals.Lite
         {
             get
             {
-                ValidateThisNotNull();
+                ThrowIfNull();
                 return (float)_value;
             }
             set
             {
-                CheckForLock();
+                CheckLocked();
                 _value = (double) value;
             }
             
@@ -62,12 +62,12 @@ namespace IonDotnet.Internals.Lite
         {
             get
             {
-                ValidateThisNotNull();
+                ThrowIfNull();
                 return _value;
             }
             set
             {
-                CheckForLock();
+                CheckLocked();
                 _value = value;
             }
         }
