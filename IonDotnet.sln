@@ -11,6 +11,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IonDotnet.Bench", "IonDotne
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IonDotnet.Serialization", "IonDotnet.Serialization\IonDotnet.Serialization.csproj", "{4721DD4D-EEBB-4E5C-9A5C-E0FD1990B3C7}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IonDotnet.Json", "IonDotnet.Json\IonDotnet.Json.csproj", "{BB100389-9A99-483F-9852-73AD760EB552}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{4721DD4D-EEBB-4E5C-9A5C-E0FD1990B3C7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4721DD4D-EEBB-4E5C-9A5C-E0FD1990B3C7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4721DD4D-EEBB-4E5C-9A5C-E0FD1990B3C7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BB100389-9A99-483F-9852-73AD760EB552}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BB100389-9A99-483F-9852-73AD760EB552}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BB100389-9A99-483F-9852-73AD760EB552}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BB100389-9A99-483F-9852-73AD760EB552}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
